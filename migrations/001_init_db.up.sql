@@ -33,8 +33,8 @@ CREATE TABLE OAuth_Authorizations (
     CONSTRAINT fk_provider
         FOREIGN KEY(provider_id)
         REFERENCES OAuth_Providers(provider_id)
-        ON DELETE CASCADE
-  CONSTRAINT unq_provider_user_id UNIQUE (provider_user_id)
+        ON DELETE CASCADE,
+    CONSTRAINT unq_provider_user_id UNIQUE (provider_user_id)
 );
 
 -- Indexes for improved performance on frequent queries
@@ -42,6 +42,5 @@ CREATE INDEX idx_oauth_user_id ON OAuth_Authorizations (user_id);
 CREATE INDEX idx_oauth_provider_id ON OAuth_Authorizations (provider_id);
 CREATE INDEX idx_user_email ON Users (email);
 
-INSERT INTO OAuth_Providers (provider_id, name)
-VALUES (1, 'Google')
-ON CONFLICT (provider_id) DO NOTHING;  
+
+

@@ -8,6 +8,7 @@ pub async fn login(
     app_service: web::Data<Arc<AppService>>,
     provider_name: web::Path<String>,
 ) -> impl Responder {
+    log::debug!("AAAAAAAAAAAAAAA{}", provider_name);
     match app_service
         .initiate_oauth(get_provider_id(&provider_name.to_string()))
         .await

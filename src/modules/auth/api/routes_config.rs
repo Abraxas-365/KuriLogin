@@ -5,7 +5,7 @@ use super::handler::{login, oauth_callback};
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/auth")
-            .route("/google/login", web::get().to(login))
-            .route("/google/callback", web::get().to(oauth_callback)),
+            .route("/{provider_name}/login", web::get().to(login))
+            .route("/{provider_name}/callback", web::get().to(oauth_callback)),
     );
 }
