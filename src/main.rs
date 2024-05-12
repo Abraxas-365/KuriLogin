@@ -35,7 +35,7 @@ async fn main() -> std::io::Result<()> {
     let user_service = Arc::new(user::AppService::new(repo.clone(), jwt_manager.clone()));
 
     let auth_service = Arc::new(auth::AppService::new(
-        Arc::new(google_provider),
+        vec![Arc::new(google_provider)],
         repo.clone(),
         user_service.clone(),
         jwt_manager,

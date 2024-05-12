@@ -41,3 +41,7 @@ CREATE TABLE OAuth_Authorizations (
 CREATE INDEX idx_oauth_user_id ON OAuth_Authorizations (user_id);
 CREATE INDEX idx_oauth_provider_id ON OAuth_Authorizations (provider_id);
 CREATE INDEX idx_user_email ON Users (email);
+
+INSERT INTO OAuth_Providers (provider_id, name)
+VALUES (1, 'Google')
+ON CONFLICT (provider_id) DO NOTHING;  

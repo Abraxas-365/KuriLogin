@@ -18,7 +18,7 @@ pub trait Provider: Send + Sync {
     /// Fetches the user data using the access token.
     async fn fetch_user_info(&self, access_token: String) -> Result<Value, reqwest::Error>;
 
-    async fn provider_id(&self) -> i32;
+    fn provider_id(&self) -> i32;
 }
 
 #[async_trait]

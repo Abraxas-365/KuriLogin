@@ -75,7 +75,7 @@ impl Provider for GoogleProvider {
             .await
     }
 
-    async fn provider_id(&self) -> i32 {
+    fn provider_id(&self) -> i32 {
         1 // Represents Google as an OAuth provider in your system
     }
 }

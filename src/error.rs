@@ -27,6 +27,9 @@ impl ResponseError for AppError {
     fn error_response(&self) -> HttpResponse {
         let (status_code, error_message) = match self {
             AppError::AuthError(auth_error) => match auth_error {
+                AuthError::ProviderNotFound(_) => {
+                    (StatusCode::NOT_FOUND, "Provider not found".to_string())
+                }
                 AuthError::InvalidToken => (StatusCode::BAD_REQUEST, "Invalid token".to_string()),
                 AuthError::AuthenticationFailed(provider) => (
                     StatusCode::UNAUTHORIZED,
@@ -102,6 +105,7 @@ impl ResponseError for AppError {
                 AuthError::TokenExchangeError(_) => StatusCode::BAD_REQUEST,
                 AuthError::InvalidTokenError(_) => StatusCode::BAD_REQUEST,
                 AuthError::OAuth2RequestTokenError(_) => StatusCode::BAD_REQUEST,
+                AuthError::ProviderNotFound(_) => StatusCode::NOT_FOUND,
             },
             AppError::UserError(user_error) => match user_error {
                 UserError::UserNotFound => StatusCode::NOT_FOUND,

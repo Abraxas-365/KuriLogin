@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 use oauth2::TokenResponse;
 
@@ -13,20 +13,25 @@ use super::{
 };
 
 pub struct AppService {
-    provider: Arc<dyn Provider>,
+    providers: HashMap<i32, Arc<dyn Provider>>,
     repo: Arc<dyn Repository>,
     user_service: Arc<user::AppService>,
     jwt_manager: Arc<JwtManager>,
 }
 impl AppService {
     pub fn new(
-        provider: Arc<dyn Provider>,
+        providers: Vec<Arc<dyn Provider>>,
         repo: Arc<dyn Repository>,
         user_service: Arc<user::AppService>,
         jwt_manager: Arc<JwtManager>,
     ) -> Self {
+        let mut providers_map = HashMap::new();
+        providers.iter().for_each(|provider| {
+            providers_map.insert(provider.provider_id(), provider.clone());
+        });
+
         Self {
-            provider,
+            providers: providers_map,
             repo,
             user_service,
             jwt_manager,
@@ -36,15 +41,24 @@ impl AppService {
 
 impl AppService {
     /// Initiates the OAuth process by generating the URL to redirect the user for authentication.
-    pub async fn initiate_oauth(&self) -> Result<String, AppError> {
-        let (auth_url, _) = self.provider.get_authorization_url().await; // CSRF token could be stored for future validation
+    pub async fn initiate_oauth(&self, provider_id: i32) -> Result<String, AppError> {
+        let provider = self.providers.get(&provider_id).ok_or(AppError::AuthError(
+            AuthError::ProviderNotFound(provider_id),
+        ))?;
+        let (auth_url, _) = provider.get_authorization_url().await;
         Ok(auth_url)
     }
 
-    pub async fn oauth_login(&self, auth_code: String) -> Result<String, AppError> {
+    pub async fn oauth_login(
+        &self,
+        auth_code: String,
+        provider_id: i32,
+    ) -> Result<String, AppError> {
         log::debug!("Received auth code: {}", auth_code);
-        let token_response = self
-            .provider
+        let provider = self.providers.get(&provider_id).ok_or(AppError::AuthError(
+            AuthError::ProviderNotFound(provider_id),
+        ))?;
+        let token_response = provider
             .exchange_token(auth_code)
             .await
             .map_err(|e| AppError::AuthError(AuthError::TokenExchangeError(e.to_string())))?;
@@ -57,8 +71,7 @@ impl AppService {
             .refresh_token()
             .map(|token| token.secret().to_string())
             .ok_or_else(|| AuthError::InvalidTokenError("No refresh token received".to_string()))?;
-        let user_info = self
-            .provider
+        let user_info = provider
             .fetch_user_info(access_token.clone())
             .await
             .map_err(|e| AppError::NetworkError(e.to_string()))?;
@@ -94,7 +107,7 @@ impl AppService {
         let auth_data = {
             let mut auth_builder = OAuthAuthorizationBuilder::new()
                 .user_id(user.user_id)
-                .provider_id(self.provider.provider_id().await)
+                .provider_id(provider.provider_id())
                 .provider_user_id(provider_user_id)
                 .access_token(access_token)
                 .refresh_token(refresh_token)

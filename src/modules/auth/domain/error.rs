@@ -29,4 +29,7 @@ pub enum AuthError {
 
     #[error("OAuth2 request token error: {0}")]
     OAuth2RequestTokenError(String),
+
+    #[error("Provider not found: {0}")]
+    ProviderNotFound(i32),
 }
