@@ -1,0 +1,23 @@
+[package]
+name = "auth_service"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-cors = "0.7.0"
+actix-web = "4.5.1"
+async-trait = "0.1.80"
+serde = "1.0.201"
+serde_json = "1.0.117"
+sqlx = { version = "0.7.4", features = ["postgres", "runtime-tokio-native-tls","chrono"] }
+tokio = { version = "1.37.0", features = ["full"] }
+env_logger = "0.8.3"
+log = "0.4.19"
+jsonwebtoken = "7"
+oauth2 = { version = "4", features = ["reqwest"], default-features = false }
+futures = "0.3.30"
+chrono = "0.4.38"
+thiserror = "1.0.60"
+reqwest = { version = "0.11", features = ["json"] }
