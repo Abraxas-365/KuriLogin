@@ -53,4 +53,4 @@ cargo run
 - Endpoints:
 - /auth/{provider_name}/login: Initiates the login process for specified OAuth providers (e.g., google). `/auth/google/login`
 - /auth/{provider_name}/callback: Handles callbacks from OAuth providers and provides JWT upon successful authentication. `/auth/google/callback`
-- /me/: Retrieves user information using a valid JWT.
+- /me/{token}: Retrieves user information using a valid JWT.
