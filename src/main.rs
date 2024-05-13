@@ -27,7 +27,7 @@ async fn main() -> std::io::Result<()> {
     let google_provider = GoogleProvider::new(
         config.google_client_id.clone(),
         config.google_client_secret.clone(),
-        config.google_redirect_uri.clone(),
+        format!("{}/{}", config.domain.clone(), "auth/google/callback"),
     );
 
     let jwt_manager = Arc::new(auth::JwtManager::new(config.jwt_secret.clone()));
