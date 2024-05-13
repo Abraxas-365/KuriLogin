@@ -1,5 +1,8 @@
 # KuriLogin
 
+
+![Logo](kurirust.png)
+
 ## Overview
 
 This authentication service is a Rust application using Actix-web. It provides OAuth-based
