@@ -1,7 +1,7 @@
 # KuriLogin
 
 
-![Logo](kurirust.png)
+<img src="kurirust.png" alt="KuriLogin Logo" width="200" height="auto">
 
 ## Overview
 
